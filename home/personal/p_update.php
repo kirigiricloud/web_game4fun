@@ -1,38 +1,42 @@
 <?php
-	include("../../mysqli_connect.php");
+include("../../mysqli_connect.php");
 
-	session_start();
+session_start();
 
-	$email = $_POST["email"];
-	$uname = $_POST["uname"];
-	$psw = $_POST["psw"];
-	$gender = $_POST["gender"];
-	$age = $_POST["age"];
-	$country = $_POST["country"];
-	$notif = $_POST["notif"];
+$email = $_POST["email"];
+$uname = $_POST["uname"];
+$psw = $_POST["psw"];
+$gender = $_POST["gender"];
+$age = $_POST["age"];
+$country = $_POST["country"];
+$notif = $_POST["notif"];
 
-	$sql = "SELECT * FROM personaluser WHERE userName = '".$uname."'";
-	$result = mysqli_query($conn, $sql);
+$sql = "SELECT * FROM personaluser WHERE userName = '".$uname."'";
+$result = mysqli_query($conn, $sql);
 
-	$_SESSION["rep"] = "";
+$_SESSION["rep"] = "";
 
-	$valid = 1;
+$valid = 1;
 
-	if ($result->num_rows > 0) {
+if ($result->num_rows > 0) {
     	// duplicate username
-		while($row = $result->fetch_assoc()) {
-			if ($row["userID"] != $_SESSION["uid"]) {
-				if ($row["userName"] == $uname) {
-					$valid = 0;
-					$_SESSION["rep"] = "plz using other user name";
-				}
+	while($row = $result->fetch_assoc()) {
+		if ($row["userID"] != $_SESSION["uid"]) {
+			if ($row["userName"] == $uname) {
+				$valid = 0;
+				$_SESSION["rep"] = "plz using other user name";
 			}
 		}
-	} 
-	
-	if ($valid) {
+	}
+} 
 
-		// prepare and bind
+if ($valid) {
+
+	if (preg_match('/[A-Za-z].*/', $country))
+	{
+		$_SESSION["rep"] = "plz country name only has characters";
+	} else {
+			// prepare and bind
 		$stmt = $conn->prepare("UPDATE personaluser SET userName=?, password=?, mail=?, gender=?, country=?, notification=?, age=? WHERE userID=?");
 		$stmt->bind_param("sssssiii", $uname, $psw, $email, $gender, $country, $notif, $age, $_SESSION["uid"]);
 
@@ -50,12 +54,13 @@
 		} else {
 			$_SESSION["rep"] = "update fail, plz try again";
 		}
-
 	}
 
-	mysqli_close($conn);
+}
 
-	header("Location: p_info.php");
-	exit;
+mysqli_close($conn);
 
-	?>
+header("Location: p_info.php");
+exit;
+
+?>
