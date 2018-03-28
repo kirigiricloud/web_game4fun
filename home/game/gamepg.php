@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +28,22 @@
   }
   body{ font: 14px sans-serif; }
   .wrapper{ width: 350px; padding: 20px; }
+  
+      body{ font: 14px sans-serif; }
+    .wrapper{ width: 350px; padding: 20px; }
+	table {
+     width: 100%;
+}
+
+td, th {
+   text-align: center;
+}
+   table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+  
+  
 </style>
 </head>
 <body>
@@ -34,8 +55,8 @@
        <div class="dropdown">
         <button>sort by</button>
         <div class="dropdown-content">
-          <p>release date</p>
-          <p>category</p>
+          <p><input type="button" value="release date" onclick="location='gamepg.php'" /></p>
+          <p><input type="button" value="category" onclick="location='sort.php'" /></p>
         </div>
       </div> </br> </br>
 
@@ -59,17 +80,27 @@
       </thead>
       <tbody>';
 
+	        
+     
       while ($row = mysqli_fetch_array($result))
       {
 
-        echo '<tr>
-        <td>'.$row['gName'].'</td>
-        <td>'.date_format(new DateTime($row['since']),'Y/m/d').'</td>
-        </tr>';
-      }
-      echo '
-      </tbody>
-      </table>';
+    
+     echo "<tr> 
+	 <td>  
+     
+	 <a href='gameP.php?gid=".$row['gameID']."'> "
+	 
+	
+	 .$row['gName']." </a> </td>
+     <td> ".$row['since']."
+	 </td>
+	  </tr>";
+	  }
+	  echo "
+	  </tbody>
+      </table>";
+
 
 
       mysqli_close($conn);
@@ -77,6 +108,7 @@
 
     </div>			
 
+	
 
   </form>
 
